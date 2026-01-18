@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitación Para Camila</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 
+        Esto solo si sabes leer código:
+        Eres la persona más linda y hermosa que he conocido.
+        Te amo tanto pero tanto que no me veo una vida sin ti.
+        No sé qué me hiciste que desde ese primer beso siempre quise más.
+        Eres la persona más completa que pude tener en mi vida.
+        Espero siempre estar para ti, porque como tú no hay dos.
+        Te amo tres mil millones.
+        */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+            overflow-x: hidden;
+            padding: 20px;
+        }
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+        }
+        .envelope {
+            width: 150px;
+            height: 150px;
+            background-image: url('https://cdn-icons-png.flaticon.com/512/25/25647.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            cursor: pointer;
+            margin: 0 auto 20px;
+            transition: transform 0.5s;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .envelope:hover {
+            transform: scale(1.1) rotate(-5deg);
+        }
+        .card {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            transform: scale(0);
+            transition: transform 0.5s;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .card.open {
+            transform: scale(1);
+        }
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .card img {
+            width: calc(50% - 10px);
+            max-width: 200px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .card img:hover {
+            transform: scale(1.05);
+        }
+        .message {
+            text-align: center;
+            font-size: 24px;
+            margin-top: 20px;
+            font-family: 'Dancing Script', cursive;
+            color: #ff6b6b;
+        }
+        .hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            top: 0;
+            left: 0;
+        }
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ff6b6b;
+            transform: rotate(45deg);
+            animation: heartFloat 4s ease-in infinite;
+        }
+        .heart::before,
+        .heart::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            position: absolute;
+        }
+        .heart::before {
+            left: -10px;
+        }
+        .heart::after {
+            top: -10px;
+        }
+        @keyframes heartFloat {
+            0% { transform: translateY(100vh) rotate(45deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(45deg); opacity: 0; }
+        }
+        #audioControl {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .decoration {
+            position: absolute;
+            font-size: 40px;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        @media (max-width: 600px) {
+            .card img {
+                width: 100%;
+                max-width: none;
+            }
+            .message {
+                font-size: 20px;
+            }
+        }
+        .memory-game {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        .memory-card {
+            aspect-ratio: 1;
+            background-color: #ff9a9e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .memory-card.flipped {
+            background-color: #fad0c4;
+            transform: rotateY(180deg);
+        }
+        .hidden-message-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .hidden-message-button {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .hidden-message-button:hover {
+            background-color: #ff8c8c;
+            transform: translateY(-3px);
+        }
+        .hidden-message {
+            display: none;
+            margin-top: 20px;
+            font-size: 22px;
+            color: #ff6b6b;
+            font-family: 'Dancing Script', cursive;
+            animation: fadeIn 2s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="envelope" onclick="openCard()"></div>
+        <div class="card" id="card">
+            <div class="image-container">
+                <img src="https://i.ibb.co/WnyJQ1P/Imagen-de-Whats-App-2024-09-13-a-las-19-27-23-39d17237.jpg" alt="Imagen 1">
+                <img src="https://i.ibb.co/qgBYrFs/IMG-20240913-WA0016.jpg" alt="Imagen 2">
+                <img src="https://i.ibb.co/J3gNGgB/IMG-20240913-WA0017.jpg" alt="Imagen 3">
+                <img src="https://i.ibb.co/18cD7Sd/IMG-20240913-WA0018.jpg" alt="Imagen 4">
+                <img src="https://i.scdn.co/image/ab67616d0000b273d6f8139f1f2fd943e1ff9b79" alt="Imagen 5">
+            </div>
+            <div class="message">
+                <p>¡Feliz viernes 13, mi amor!</p>
+                <p>Eres la persona que más quiero en este mundo.</p>
+            </div>
+            <div class="hidden-message-container">
+                <button class="hidden-message-button" onclick="startMemoryGame()">Juega para descubrir un secreto más</button>
+                <div id="memoryGame" class="memory-game" style="display:none;"></div>
+                <div id="hiddenMessage" class="hidden-message"></div>
+            </div>
+        </div>
+    </div>
+    <div class="hearts" id="hearts"></div>
+    <audio id="backgroundMusic" loop>
+        <source src="https://raw.githubusercontent.com/tomas-arciniegas/Se-orita/3a9ca4c325f5b0676cc435a0f5b7f5499a5ecf62/Jean%20Pi%2C%20DEKKO%20-%20Se%C3%B1orita%20Remix%20(Official%20Video).mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+    <button id="audioControl" onclick="toggleMusic()">🔊</button>
+
+    <script>
+        let musicStarted = false;
+        const emojis = ['❤️', '💖', '😘', '😍', '💕', '💞', '💓', '💗'];
+        let flippedCards = [];
+        let matchedPairs = 0;
+
+        function openCard() {
+            document.getElementById('card').classList.add('open');
+            createHearts();
+            createDecorations();
+            if (!musicStarted) {
+                toggleMusic();
+            }
+        }
+
+        function toggleMusic() {
+            const music = document.getElementById('backgroundMusic');
+            const audioControl = document.getElementById('audioControl');
+            
+            if (music.paused) {
+                let playPromise = music.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        audioControl.textContent = '🔊';
+                        musicStarted = true;
+                    })
+                    .catch(error => {
+                        console.log("Reproducción automática evitada por el navegador. Haz clic en el botón de audio para empezar.");
+                    });
+                }
+            } else {
+                music.pause();
+                audioControl.textContent = '🔇';
+            }
+        }
+
+        function createHearts() {
+            const heartsContainer = document.getElementById('hearts');
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.classList.add('heart');
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    heartsContainer.appendChild(heart);
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 5000);
+                }, i * 300);
+            }
+        }
+
+        function createDecorations() {
+            const container = document.querySelector('.container');
+            const decorations = ['🌟', '🎉', '💖', '✨', '🎈'];
+            for (let i = 0; i < 10; i++) {
+                const decoration = document.createElement('div');
+                decoration.classList.add('decoration');
+                decoration.textContent = decorations[Math.floor(Math.random() * decorations.length)];
+                decoration.style.left = Math.random() * 100 + '%';
+                decoration.style.top = Math.random() * 100 + '%';
+                container.appendChild(decoration);
+            }
+        }
+
+        function startMemoryGame() {
+            const gameContainer = document.getElementById('memoryGame');
+            gameContainer.style.display = 'grid';
+            gameContainer.innerHTML = '';
+            
+            const shuffledEmojis = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+            
+            shuffledEmojis.forEach((emoji, index) => {
+                const card = document.createElement('div');
+                card.classList.add('memory-card');
+                card.dataset.emoji = emoji;
+                card.onclick = () => flipCard(card);
+                gameContainer.appendChild(card);
+            });
+        }
+
+        function flipCard(card) {
+            if (flippedCards.length < 2 && !flippedCards.includes(card) && !card.classList.contains('flipped')) {
+                card.classList.add('flipped');
+                card.textContent = card.dataset.emoji;
+                flippedCards.push(card);
+                
+                if (flippedCards.length === 2) {
+                    setTimeout(checkMatch, 500);
+                }
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            if (card1.dataset.emoji === card2.dataset.emoji) {
+                matchedPairs++;
+                if (matchedPairs === emojis.length) {
+                    setTimeout(revealHiddenMessage, 500);
+                }
+            } else {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                card1.textContent = '';
+                card2.textContent = '';
+            }
+            flippedCards = [];
+        }
+
+        function revealHiddenMessage() {
+            const hiddenMessage = document.getElementById('hiddenMessage');
+            hiddenMessage.style.display = 'block';
+            hiddenMessage.innerHTML = "Amor cada dia a tu lado es una aventura. Eres de las mejores cosas que me han pasado, me siento muy feliz de que estes en mi vida, Te amo más allá de las palabras. ❤️ Prepárate, el 20 paso por ti a las 8am. Nos vemos, ¡lleva toda tu energía y amor!";
+        }
+
+        // Precarga el audio
+        window.addEventListener('load', function() {
+            const music = document.getElementById('backgroundMusic');
+            music.load();
+        });
+    </script>
+</body>
+</html>
